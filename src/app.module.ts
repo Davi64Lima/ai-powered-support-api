@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { ChatModule } from './modules/chat/chat.module';
-import { env } from 'process';
 import { enviroments } from './types/enviroment';
 
 @Module({
