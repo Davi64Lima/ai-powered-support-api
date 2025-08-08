@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { ChatModule } from './modules/chat/chat.module';
+import { env } from 'process';
+import { enviroments } from './types/enviroment';
 
 @Module({
   imports: [
@@ -14,7 +16,12 @@ import { ChatModule } from './modules/chat/chat.module';
         type: 'postgres',
         url: config.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true, // ⚠ Apenas para dev
+        synchronize:
+          config.get<string>('NODE_ENV') === enviroments.DEVELOPMENT
+            ? true
+            : false,
+        retryAttempts: 10,
+        retryDelay: 3000,
       }),
     }),
     RedisModule.forRootAsync({

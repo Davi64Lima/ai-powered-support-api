@@ -14,11 +14,15 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Copia apenas o necessário para rodar
+RUN apk add --no-cache bash curl
+
 COPY package*.json ./
 RUN npm install --only=production
 
 COPY --from=builder /app/dist ./dist
+COPY wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
 
 ENV NODE_ENV=production
-CMD ["node", "dist/main"]
+
+CMD ["/wait-for-it.sh", "postgres:5432", "--", "node", "dist/main"]
